@@ -25,23 +25,41 @@ def plotMidText(cntrPt, parentPt, txtString):
     yMid = (parentPt[1] - cntrPt[1])/2.0 + cntrPt[1]
     createPlot.ax1.text(xMid, yMid, txtString)
 
-def plotTree(myTree, parentPt, nodeTxt):
-    numLeafs = getNumLeafs(myTree)
+# def plotTree(myTree, parentPt, nodeTxt):
+#     numLeafs = getNumLeafs(myTree)
+#     depth = getTreeDepth(myTree)
+#     firstStr = list(myTree.keys())[0]
+#     cntrPt = (plotTree.xOff + (1.0 + float(numLeafs))/2.0/plotTree.totalW, plotTree.yOff)
+#     plotMidText(cntrPt, parentPt, nodeTxt)
+#     plotNode(firstStr, cntrPt, parentPt, decisionNode)
+#     secondDict = myTree[firstStr]
+#     plotTree.yOff = plotTree.yOff - 1.0/plotTree.totalD #减少y偏移
+#     for key in secondDict.keys():
+#         if type(secondDict[key]).__name__=='dict':
+#             plotTree(secondDict[key], cntrPt, str(key))
+#         else:
+#             plotTree.xOff = plotTree.xOff + 1.0/plotTree.totalW
+#             plotNode(secondDict[key], (plotTree.xOff, plotTree.yOff), cntrPt, leafNode)
+#             plotMidText((plotTree.xOff, plotTree.yOff),cntrPt, str(key))
+#     plotTree.yOff = plotTree.yOff + 1.0/plotTree.totalD
+def plotTree(myTree, parentPt, nodeTxt):#if the first key tells you what feat was split on
+    numLeafs = getNumLeafs(myTree)  #this determines the x width of this tree
     depth = getTreeDepth(myTree)
-    firstStr = list(myTree.keys())[0]
+    firstStr = list(myTree.keys())[0]     #the text label for this node should be this
     cntrPt = (plotTree.xOff + (1.0 + float(numLeafs))/2.0/plotTree.totalW, plotTree.yOff)
     plotMidText(cntrPt, parentPt, nodeTxt)
     plotNode(firstStr, cntrPt, parentPt, decisionNode)
     secondDict = myTree[firstStr]
-    plotTree.yOff = plotTree.yOff - 1.0/plotTree.totalD #减少y偏移
+    plotTree.yOff = plotTree.yOff - 1.0/plotTree.totalD
     for key in secondDict.keys():
-        if type(secondDict[key]).__name__=='dict':
-            plotTree(secondDict[key], cntrPt, str(key))
-        else:
+        if type(secondDict[key]).__name__=='dict':#test to see if the nodes are dictonaires, if not they are leaf nodes
+            plotTree(secondDict[key],cntrPt,str(key))        #recursion
+        else:   #it's a leaf node print the leaf node
             plotTree.xOff = plotTree.xOff + 1.0/plotTree.totalW
             plotNode(secondDict[key], (plotTree.xOff, plotTree.yOff), cntrPt, leafNode)
-            plotMidText((plotTree.xOff, plotTree.yOff),cntrPt, str(key))
+            plotMidText((plotTree.xOff, plotTree.yOff), cntrPt, str(key))
     plotTree.yOff = plotTree.yOff + 1.0/plotTree.totalD
+#if you do get a dictonary you know it's a tree, and the first element will be another dict
 
 def createPlot(inTree):
     fig = plt.figure(1, facecolor='white')
